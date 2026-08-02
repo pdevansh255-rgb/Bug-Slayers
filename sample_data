@@ -1,0 +1,153 @@
+=======================
+Single consolVITALIS — AI HEALTHCARE AGENT
+idated requirements + sample data file
+=================================================================
+
+-----------------------------------------------------------------
+1. PYTHON REQUIREMENTS (pip install -r requirements.txt)
+-----------------------------------------------------------------
+pandas>=2.0
+jupyter>=1.0
+
+(Everything else used in agent.ipynb — re, json, pathlib,
+dataclasses, datetime, urllib.parse — is Python standard library,
+no install needed.)
+
+
+-----------------------------------------------------------------
+2. SAMPLE DATA — HOSPITALS (hospitals.csv)
+Columns: name, specialties, rating, base_eta_min
+-----------------------------------------------------------------
+name,specialties,rating,base_eta_min
+Apex General Hospital,"General Medicine|Emergency / ER|Cardiology",4.5,6
+Riverside Medical Center,"Emergency / ER|Orthopedics|Neurology",4.3,9
+CarePoint Specialty Clinic,"Gastroenterology|General Medicine",4.6,12
+St. Anne's Multispecialty,"Cardiology|Neurology|Emergency / ER",4.7,14
+Sunrise Children's Hospital,"Pediatrics|General Medicine",4.4,11
+Lotus Skin & Derma Institute,"Dermatology",4.2,17
+Metro Women's Health Center,"Gynecology|General Medicine",4.5,13
+Horizon Trauma & Emergency,"Emergency / ER|Orthopedics",4.6,5
+Neuro Care Institute,"Neurology",4.4,19
+CityHealth Community Hospital,"General Medicine|Emergency / ER|Pediatrics|Gynecology",4.1,8
+
+
+-----------------------------------------------------------------
+3. SAMPLE DATA — SYMPTOM KNOWLEDGE BASE (symptom_kb.csv)
+Columns: keywords, specialty, weight, likely_cause
+-----------------------------------------------------------------
+keywords,specialty,weight,likely_cause
+chest pain|tight chest|pressure in my chest,Cardiology,4,Cardiac or musculoskeletal chest pain
+shortness of breath|breathless|wheezing,Cardiology,3,Respiratory or cardiac cause
+palpitations|racing heart|irregular heartbeat,Cardiology,2,Arrhythmia or anxiety-related palpitations
+headache,Neurology,1,Tension or migraine headache
+dizziness|dizzy|lightheaded,Neurology,2,"Vestibular issue, dehydration, or low blood pressure"
+numbness|tingling,Neurology,2,Nerve compression or circulation issue
+abdominal pain|stomach pain|belly pain,Gastroenterology,2,Gastrointestinal irritation or infection
+lower right abdomen|right side pain,Gastroenterology,3,Possible appendicitis-pattern pain
+nausea|vomiting,Gastroenterology,1,Gastroenteritis or food-related upset
+diarrhea,Gastroenterology,1,Gastrointestinal infection
+heartburn|acid reflux,Gastroenterology,1,Acid reflux / GERD
+fever|chills,General Medicine,1,Viral or bacterial infection
+sore throat,General Medicine,1,Throat infection
+cough,General Medicine,1,Upper respiratory infection
+runny nose|congestion,General Medicine,0.5,Common cold / allergies
+fatigue|tired all the time|low energy,General Medicine,1,"Sleep, nutrition, thyroid, or anemia related fatigue"
+rash|hives|itchy skin,Dermatology,1,Dermatitis or allergic skin reaction
+joint pain|swollen joint,Orthopedics,1.5,Joint inflammation or minor injury
+sprain|fracture|broken bone|can't bear weight,Orthopedics,3,Musculoskeletal injury
+back pain,Orthopedics,1,Muscular strain or spinal issue
+burning urination|painful urination,General Medicine,2,Urinary tract infection
+pregnant|pregnancy,Gynecology,1,Pregnancy-related symptom
+vaginal bleeding|pelvic pain,Gynecology,2,Gynecological issue needing evaluation
+child|infant|toddler,Pediatrics,1,Pediatric-specific presentation
+anxious|anxiety|panic attack,General Medicine,1,Anxiety or stress-related symptoms
+
+
+-----------------------------------------------------------------
+4. SAMPLE DATA — RED FLAG EMERGENCY KEYWORDS (red_flags.csv)
+Columns: keyword, label
+-----------------------------------------------------------------
+keyword,label
+chest pain,Chest pain
+crushing pain,Crushing chest pain
+can't breathe,Severe breathing difficulty
+cannot breathe,Severe breathing difficulty
+difficulty breathing,Difficulty breathing
+shortness of breath,Shortness of breath
+blue lips,Cyanosis (blue lips/skin)
+severe bleeding,Severe bleeding
+uncontrolled bleeding,Uncontrolled bleeding
+unconscious,Loss of consciousness
+unresponsive,Unresponsive
+seizure,Seizure
+slurred speech,Slurred speech
+face drooping,Facial drooping
+one side of my body,One-sided weakness/numbness
+sudden numbness,Sudden numbness
+worst headache,Sudden severe headache
+thunderclap headache,Thunderclap headache
+severe allergic,Severe allergic reaction
+anaphyla,Anaphylaxis signs
+swelling of throat,Throat swelling
+coughing blood,Coughing blood
+vomiting blood,Vomiting blood
+severe burn,Severe burn
+high fever in infant,High fever in an infant
+stiff neck,Stiff neck with fever
+
+
+-----------------------------------------------------------------
+5. SAMPLE DATA — DRUG INTERACTIONS (drug_interactions.csv)
+Columns: drug_a, drug_b, risk, note
+-----------------------------------------------------------------
+drug_a,drug_b,risk,note
+warfarin,aspirin,high,Combining these significantly raises bleeding risk.
+warfarin,ibuprofen,high,NSAIDs + warfarin increase GI bleeding risk.
+warfarin,vitamin k,moderate,Vitamin K can reduce warfarin's effectiveness.
+aspirin,ibuprofen,low,Both are NSAIDs — regular combined use raises GI irritation risk.
+ssri,maoi,high,Risk of serotonin syndrome — this combination is generally avoided.
+sertraline,tramadol,high,Increased serotonin syndrome risk.
+metformin,alcohol,moderate,Alcohol can increase risk of lactic acidosis with metformin.
+statin,grapefruit,moderate,Grapefruit can raise statin blood levels increasing side-effect risk.
+atorvastatin,grapefruit,moderate,Grapefruit can raise statin blood levels increasing side-effect risk.
+ace inhibitor,potassium,moderate,Combination can raise blood potassium to unsafe levels.
+lisinopril,potassium,moderate,Combination can raise blood potassium to unsafe levels.
+sildenafil,nitrate,high,Can cause a dangerous sudden drop in blood pressure.
+insulin,alcohol,moderate,Alcohol can unpredictably affect blood sugar with insulin.
+
+
+-----------------------------------------------------------------
+6. SAMPLE DATA — FAMILY HEREDITARY RISK KB (family_risk_kb.csv)
+Columns: condition, screenings, tips
+-----------------------------------------------------------------
+condition,screenings,tips
+diabetes,"Fasting blood glucose / HbA1c every 1-3 years, earlier if overweight","Maintain a balanced diet, regular activity, and healthy weight"
+heart disease,Blood pressure & cholesterol checks annually after age 30,"Limit saturated fat and sodium, exercise regularly, avoid smoking"
+hypertension,Blood pressure check at least yearly,"Reduce sodium intake, manage stress, stay active"
+stroke,Blood pressure and cholesterol monitoring,"Control blood pressure, avoid smoking, stay active"
+cancer,Age-appropriate cancer screenings (discuss timing with a doctor),"Avoid tobacco, limit alcohol, maintain healthy weight"
+thyroid,TSH blood test if symptomatic or every few years,"Watch for fatigue, weight change, or temperature sensitivity"
+asthma,Lung function test if symptomatic,Identify and avoid personal triggers
+kidney,Kidney function panel periodically if risk factors present,"Stay hydrated, manage blood pressure and blood sugar"
+
+
+-----------------------------------------------------------------
+7. SAMPLE DATA — LAB REFERENCE RANGES (lab_reference.csv)
+Columns: key, unit, low, high, meaning
+-----------------------------------------------------------------
+key,unit,low,high,meaning
+glucose,mg/dL,70,99,blood sugar level
+hba1c,%,4,5.6,average blood sugar over ~3 months
+ldl,mg/dL,0,100,"""bad"" cholesterol"
+hdl,mg/dL,40,200,"""good"" cholesterol (higher is generally better here)"
+cholesterol,mg/dL,0,200,total cholesterol
+triglycerides,mg/dL,0,150,blood fat levels
+hemoglobin,g/dL,12,16.5,oxygen-carrying protein in blood
+creatinine,mg/dL,0.6,1.3,kidney function marker
+tsh,mIU/L,0.4,4.0,thyroid-stimulating hormone
+wbc,x10^3/uL,4,11,white blood cell count (immune activity)
+platelet,x10^3/uL,150,450,blood clotting cells
+
+=================================================================
+END OF FILE
+=================================================================
